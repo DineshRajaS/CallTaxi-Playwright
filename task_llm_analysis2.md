@@ -83,8 +83,7 @@ Call log:
 **AI tool used:** *(write: ChatGPT GPT-4o / Claude 3.5 / Gemini etc.)*
 
 ```
-PASTE YOUR EXACT PROMPT HERE
-```
+PASTE YOUR EXACT PROMPT HERE```
 
 *(Template to use — copy and fill in your real failure output)*
 
