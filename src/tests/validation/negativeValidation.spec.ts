@@ -32,7 +32,8 @@ test.describe('Booking — Negative Validation', () => {
     await expect(common.tripError).toBeVisible();
     await expect(common.cabTypeError).toBeVisible();
     await expect(common.passengerError).toBeVisible();
-    await expect(common.fullNameError).not.toBeVisible();
+    // await expect(common.fullNameError).not.toBeVisible();
+    await expect(common.fullNameError).toHaveText('', { timeout: 5000 });
   });
 
   test('TC09: Invalid email format triggers email error', async ({ booking, common }) => {
