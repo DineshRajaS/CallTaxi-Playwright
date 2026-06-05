@@ -1,0 +1,24 @@
+{
+  "name": "taxi-booking-playwright",
+  "version": "1.0.0",
+  "description": "AI-assisted Playwright test suite for CallTaxiService",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:booking": "npx playwright test tests/booking",
+    "test:validation": "npx playwright test tests/validation",
+    "test:headed": "npx playwright test --headed",
+    "test:debug": "npx playwright test --debug",
+    "report": "npx playwright show-report",
+    "generate-data": "npx ts-node src/testData/generateBooking.ts",
+    "release-score": "npx ts-node generateReleaseScore.ts",
+    "test:full": "npm run test && npm run release-score"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
+    "@playwright/test": "^1.44.0",
+    "@types/node": "^20.0.0 || ^25.0.0",
+    "exceljs": "^4.4.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}

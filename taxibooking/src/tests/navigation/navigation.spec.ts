@@ -14,13 +14,13 @@ test.describe('Navigation & Page State', () => {
     await common.goToBooking();  await expect(page).toHaveURL(/booking/i);
   });
 
-  // test('TC13: Booking page URL contains /booking', async ({ page }) => {
-  //   await expect(page).toHaveURL(/booking/i);
-  // });
+  test('TC13: Booking page URL contains /booking', async ({ page }) => {
+    await expect(page).toHaveURL(/booking/i);
+  });
 
-  // test('TC14: Booking page has a non-empty title', async ({ page }) => {
-  //   expect((await page.title()).length).toBeGreaterThan(0);
-  // });
+  test('TC14: Booking page has a non-empty title', async ({ page }) => {
+    expect((await page.title()).length).toBeGreaterThan(0);
+  });
 
   test('TC15: All required form fields are visible on page load', async ({ booking }) => {
     await expect(booking.fullNameInput).toBeVisible();

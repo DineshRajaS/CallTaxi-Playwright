@@ -53,7 +53,7 @@ test.describe('Booking — Negative Validation', () => {
 
   test('TC11: Confirmation message is not visible before form submit', async ({ booking }) => {
     await expect(booking.confirmationMsg).not.toBeVisible();
-    // await expect(booking.bookingTable).not.toBeVisible();
+    await expect(booking.bookingTable).not.toBeVisible();
   });
 
 });
