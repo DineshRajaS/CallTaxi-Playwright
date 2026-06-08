@@ -19,7 +19,7 @@
 // Must use browser.newContext() which creates a fully independent session.
 // ────────────────────────────────────────────────────────────────────────────
 
-import { test, expect } from '@playwright/test';
+import { test, expect, request } from '@playwright/test';
 
 const BASE = 'https://webapps.tekstac.com/SeleniumApp2/CallTaxiService';
 
@@ -27,60 +27,113 @@ const BASE = 'https://webapps.tekstac.com/SeleniumApp2/CallTaxiService';
 // Calls each page as a plain HTTP request — no browser launched.
 // Validates status code and presence of key content specific to that page.
 
+// test.describe('API — CallTaxi page HTTP responses', () => {
+
+//     test('TC-API-01 | GET booking.html — 200, booking form elements present', async ({ request }) => {
+//         const response = await request.get(`${BASE}/booking.html`);
+
+//         expect(response.status()).toBe(200);
+
+//         const body = await response.text();
+//         expect(body).toContain('Book Now');
+//         expect(body).toContain('fullname');      // Full Name input ID
+//         expect(body).toContain('cabselect');     // Cab dropdown ID
+//         expect(body).toContain('submitted');     // Submit button ID
+//     });
+
+//     test('TC-API-02 | GET Home.html — 200, home page content present', async ({ request }) => {
+//         const response = await request.get(`${BASE}/Home.html`);
+
+//         expect(response.status()).toBe(200);
+
+//         const body = await response.text();
+//         expect(body).toContain('Call Taxi Service');
+//         expect(body).toContain('Book Now');
+//     });
+
+//     test('TC-API-03 | GET services.html — 200, all four cab types listed', async ({ request }) => {
+//         const response = await request.get(`${BASE}/services.html`);
+
+//         expect(response.status()).toBe(200);
+
+//         const body = await response.text();
+//         expect(body).toContain('Type of Cab Services');
+//         expect(body).toContain('Mini');
+//         expect(body).toContain('Micro');
+//         expect(body).toContain('Sedan');
+//         expect(body).toContain('Suv');
+//     });
+
+//     test('TC-API-04 | GET contact.html — 200, real contact details present', async ({ request }) => {
+//         const response = await request.get(`${BASE}/contact.html`);
+
+//         expect(response.status()).toBe(200);
+
+//         const body = await response.text();
+//         expect(body).toContain('Contact');
+//         expect(body).toContain('0422 4567890');          // real phone from the page
+//         expect(body).toContain('info@jujutaxi.co.in');   // real email from the page
+//     });
+
+//     test('TC-API-05 | GET nonexistent page — returns 404', async ({ request }) => {
+//         const response = await request.get(`${BASE}/nonexistent-xyz.html`);
+//         expect(response.status()).toBe(404);
+//     });
+
+// });
+
+
+const baseURL = "http://lmsreact.tekstac.com:3003/taxiBooking";
+
 test.describe('API — CallTaxi page HTTP responses', () => {
 
-    test('TC-API-01 | GET booking.html — 200, booking form elements present', async ({ request }) => {
-        const response = await request.get(`${BASE}/booking.html`);
+  test('GET /taxiBooking - should return 200 and valid booking data', async () => {
+    const context = await request.newContext();
+    const response = await context.get(`${baseURL}`);
 
-        expect(response.status()).toBe(200);
+    // Check status code
+    expect(response.status()).toBe(200);
 
-        const body = await response.text();
-        expect(body).toContain('Book Now');
-        expect(body).toContain('fullname');      // Full Name input ID
-        expect(body).toContain('cabselect');     // Cab dropdown ID
-        expect(body).toContain('submitted');     // Submit button ID
+    // Check that response body is valid
+    const body = await response.json();
+    expect(body).toBeDefined();
+    expect(typeof body).toBe('object');
+    expect(Object.keys(body).length).toBeGreaterThan(0);
+  });
+
+  test('POST /taxiBooking - should create a new booking and return 201', async () => {
+    const context = await request.newContext();
+
+    const newData = {
+        "id": "TC-011",
+        "fullName": "Marco Johnson",
+        "phoneNumber": "9876543110",
+        "email": "marc0@gmail.com",
+        "tripValue": "long trip",
+        "cabSelect": "mini",
+        "cabType": "ac",
+        "pickupDate": "2027-03-12",
+        "pickupTime": "11:00",
+        "passengerCount": "4",
+        "tripType": "oneway"
+    }
+
+    const response = await context.post(`${baseURL}`, {
+      data: newData
     });
 
-    test('TC-API-02 | GET Home.html — 200, home page content present', async ({ request }) => {
-        const response = await request.get(`${BASE}/Home.html`);
+    // Check status code
+    expect(response.status()).toBe(201);
 
-        expect(response.status()).toBe(200);
-
-        const body = await response.text();
-        expect(body).toContain('Call Taxi Service');
-        expect(body).toContain('Book Now');
-    });
-
-    test('TC-API-03 | GET services.html — 200, all four cab types listed', async ({ request }) => {
-        const response = await request.get(`${BASE}/services.html`);
-
-        expect(response.status()).toBe(200);
-
-        const body = await response.text();
-        expect(body).toContain('Type of Cab Services');
-        expect(body).toContain('Mini');
-        expect(body).toContain('Micro');
-        expect(body).toContain('Sedan');
-        expect(body).toContain('Suv');
-    });
-
-    test('TC-API-04 | GET contact.html — 200, real contact details present', async ({ request }) => {
-        const response = await request.get(`${BASE}/contact.html`);
-
-        expect(response.status()).toBe(200);
-
-        const body = await response.text();
-        expect(body).toContain('Contact');
-        expect(body).toContain('0422 4567890');          // real phone from the page
-        expect(body).toContain('info@jujutaxi.co.in');   // real email from the page
-    });
-
-    test('TC-API-05 | GET nonexistent page — returns 404', async ({ request }) => {
-        const response = await request.get(`${BASE}/nonexistent-xyz.html`);
-        expect(response.status()).toBe(404);
-    });
+    // Check response body
+    const body = await response.json();
+    expect(body).toBeDefined();
+    expect(body.fullName).toBe(newData.fullName);
+    expect(body.cabType).toBe(newData.cabType);
+  });
 
 });
+
 
 // ── Module 5: Browser contexts — session isolation ───────────────────────────
 // Each newContext() is a completely independent browser session.
